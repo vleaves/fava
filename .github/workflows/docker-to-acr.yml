@@ -1,0 +1,25 @@
+name: Build and Push Docker Image to Alibaba Cloud ACR
+on:
+  push:
+    branches: [ "main" ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Login to Alibaba Cloud ACR
+      run: |
+        echo "${{ secrets.ACR_PASSWORD }}" | docker login \
+          --username "${{ secrets.ACR_USERNAME }}" \
+          --password-stdin "${{ secrets.ACR_REGISTRY }}"
+
+    - name: Build Docker Image
+      run: |
+        docker build -t ${{ secrets.ACR_REGISTRY }}/${{ secrets.ACR_NAMESPACE }}/${{ secrets.ACR_REPO }}:latest .
+
+    - name: Push Docker Image to ACR
+      run: |
+        docker push ${{ secrets.ACR_REGISTRY }}/${{ secrets.ACR_NAMESPACE }}/${{ secrets.ACR_REPO }}:latest
