@@ -5,8 +5,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+  
 
     steps:
+    - name: Fix DNS for GitHub Runner
+      run: |
+        echo -e "nameserver 8.8.8.8\nnameserver 223.5.5.5" | sudo tee /etc/resolv.conf
     - name: Checkout code
       uses: actions/checkout@v4
 
