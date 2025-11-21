@@ -1,4 +1,4 @@
-name: Build and Push Docker Image to Alibaba Cloud ACR
+name: Build and Push Docker Image to ACR
 on:
   push:
     branches: [ "main" ]
@@ -11,6 +11,10 @@ jobs:
     steps:        
     - name: Checkout code
       uses: actions/checkout@v4
+
+    - name: Check DNS
+      run: |
+        dig "${{ secrets.ACR_REGISTRY }}" +trace
 
     - name: Login to Alibaba Cloud ACR
       run: |
