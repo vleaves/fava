@@ -6,13 +6,13 @@ FROM node:${NODE_BUILD_IMAGE} AS node_build_env
 ARG FAVA_VERSION
 
 WORKDIR /tmp/build
-RUN git clone https://github.com/beancount/fava
+RUN git clone https://github.com/beancount/fava -b ${FAVA_VERSION} fava
 
 RUN apt-get update
 RUN apt-get install -y python3-babel
 
 WORKDIR /tmp/build/fava
-RUN git checkout ${FAVA_VERSION}
+# RUN git checkout ${FAVA_VERSION}
 RUN make
 RUN rm -rf .*cache && \
     rm -rf .eggs && \
@@ -39,12 +39,16 @@ ENV PATH="/app/bin:$PATH"
 RUN python3 -mvenv /app
 COPY --from=node_build_env /tmp/build/fava /tmp/build/fava
 
+# WORKDIR /tmp/build
+# RUN git clone https://github.com/beancount/beancount
+
+# WORKDIR /tmp/build/beancount
+# RUN git checkout ${BEANCOUNT_VERSION}
+
 WORKDIR /tmp/build
-RUN git clone https://github.com/beancount/beancount
+RUN git clone https://github.com/beancount/beancount -b ${BEANCOUNT_VERSION} beancount
 
 WORKDIR /tmp/build/beancount
-RUN git checkout ${BEANCOUNT_VERSION}
-
 RUN CFLAGS=-s pip3 install -U /tmp/build/beancount
 RUN pip3 install -U /tmp/build/fava
 ADD requirements.txt .
