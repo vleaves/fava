@@ -29,7 +29,7 @@ RUN rm -rf .*cache && \
 # distroless Python image, which is Debian + Python from Debain APT
 # repo. The python intepreter in the `python:bookworm` image is not from
 # Debian APT repo.
-FROM debian:bookworm AS build_env
+FROM debian:trixie AS build_env
 ARG BEANCOUNT_VERSION
 
 RUN apt-get update
